@@ -1,7 +1,136 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <link rel="stylesheet" href="/page.css">
+<style>
+body {
+    margin: 0;
+    position: relative;
+  }
+  
+  .slider {
+    max-width: 800px;
+  }
+  
+  .slider__images {
+    opacity: 0;
+    visibility: hidden;
+    position: relative;
+    top: 0px;
+    left: 0px;
+    list-style-type: none;
+    transition: opacity .4s ease-in, visibility .4s ease-in;
+  }
+  .slider__images.loaded {
+    opacity: 1;
+    visibility: visible;
+  }
+  .slider__images-item {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+  }
+  .no-js .slider__images-item:first-of-type {
+    position: relative;
+  }
+  .no-js .slider__images-item:not(:first-of-type) {
+    display: none !important;
+  }
+  .slider__images-image {
+    display: block;
+  }
+  
+  .slider__controls {
+    margin-top: 30px;
+    user-select: none;
+    text-align: center;
+  }
+  
+  .slider__control {
+    display: inline-block;
+    color: #829995;
+    cursor: pointer;
+  }
+  
+  .slider__control--prev {
+    margin-right: 10px;
+  }
+  
+  .slider__control--next {
+    margin-left: 10px;
+  }
+  
+  .slider__pagers {
+    display: inline-block;
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+  }
+  .slider__pagers li {
+    display: inline-block;
+    margin: 0 5px;
+    cursor: pointer;
+    color: #829995;
+    padding: 0 10px;
+  }
+  .slider__pagers li.active {
+    color: #333;
+  }
+  
+  body {
+    background: #EF629F;
+    background: linear-gradient(to right, #EF629F, #EECDA3);
+    font-family: Avenir, 'Proxima Nova', sans-serif;
+    font-weight: normal;
+    line-height: 1.5;
+  }
+  
+  ul,
+  ol,
+  div {
+    margin: 0;
+    padding: 0;
+  }
+  
+  img {
+    max-width: 100%;
+  }
+  
+  h1 {
+    margin-top: 30px;
+    color: #fff;
+    font-size: 18px;
+    font-weight: normal;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+  }
+  
+  .wrapper {
+    padding: 30px;
+  }
+  
+  .header,
+  .footer {
+    margin: auto;
+    max-width: 800px;
+    text-align: center;
+    color: #fff;
+  }
+  .header a,
+  .footer a {
+    color: #fff;
+  }
+  
+  .footer {
+    margin-top: 30px;
+  }
+  
+  .slider {
+    margin: 30px auto 0;
+    padding: 30px;
+    background: white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  }
+</style>
 </head>
 
 <body>
@@ -37,90 +166,90 @@
     </footer>
    </div>
 <script>
-      // create pager list items
-var sliderImage = $('.slider__images-image');
+        // create pager list items
+    var sliderImage = $('.slider__images-image');
 
-sliderImage.each(function (index) {
-    $('.js__slider__pagers').append('<li>'+(index+1)+'</li>');
-});
+    sliderImage.each(function (index) {
+        $('.js__slider__pagers').append('<li>'+(index+1)+'</li>');
+    });
 
-// set up vars
-var sliderPagers       = 'ol.js__slider__pagers li',
-    sliderPagersActive = '.js__slider__pagers li.active',
-    sliderImages       = '.js__slider__images',
-    sliderImagesItem   = '.slider__images-item',
-    sliderControlNext  = '.slider__control--next',
-    sliderControlPrev  = '.slider__control--prev',
-    sliderSpeed        = 5000,
-    lastElem           = $(sliderPagers).length-1,
-    sliderTarget;
+    // set up vars
+    var sliderPagers       = 'ol.js__slider__pagers li',
+        sliderPagersActive = '.js__slider__pagers li.active',
+        sliderImages       = '.js__slider__images',
+        sliderImagesItem   = '.slider__images-item',
+        sliderControlNext  = '.slider__control--next',
+        sliderControlPrev  = '.slider__control--prev',
+        sliderSpeed        = 5000,
+        lastElem           = $(sliderPagers).length-1,
+        sliderTarget;
 
-// add css heigt to slider images list
-function checkImageHeight() {
-    var sliderHeight = $('.slider__images-image:visible').height(); 
-    $(sliderImages).css('height', sliderHeight+'px');
-};
+    // add css heigt to slider images list
+    function checkImageHeight() {
+        var sliderHeight = $('.slider__images-image:visible').height(); 
+        $(sliderImages).css('height', sliderHeight+'px');
+    };
 
-sliderImage.on('load', function() {
-    checkImageHeight();
-    $(sliderImages).addClass('loaded')
-});
-$(window).resize(function(){
-    checkImageHeight();
-});
+    sliderImage.on('load', function() {
+        checkImageHeight();
+        $(sliderImages).addClass('loaded')
+    });
+    $(window).resize(function(){
+        checkImageHeight();
+    });
 
-// set up first slide
-$(sliderPagers).first().addClass('active');
-$(sliderImagesItem).hide().first().show();
+    // set up first slide
+    $(sliderPagers).first().addClass('active');
+    $(sliderImagesItem).hide().first().show();
 
-// transition function
-function sliderResponse(sliderTarget) {
-    $(sliderImagesItem).fadeOut(300).eq(sliderTarget).fadeIn(300);
-    $(sliderPagers).removeClass('active').eq(sliderTarget).addClass('active');
-}
+    // transition function
+    function sliderResponse(sliderTarget) {
+        $(sliderImagesItem).fadeOut(300).eq(sliderTarget).fadeIn(300);
+        $(sliderPagers).removeClass('active').eq(sliderTarget).addClass('active');
+    }
 
-// pager controls
-$(sliderPagers).on('click', function() {
-    if ( !$(this).hasClass('active') ) {
-        sliderTarget = $(this).index();
+    // pager controls
+    $(sliderPagers).on('click', function() {
+        if ( !$(this).hasClass('active') ) {
+            sliderTarget = $(this).index();
+            sliderResponse(sliderTarget);
+            resetTiming();
+        }
+    });
+
+    // next/prev controls
+    $(sliderControlNext).on('click', function() {
+        sliderTarget = $(sliderPagersActive).index();
+        sliderTarget === lastElem ? sliderTarget = 0 : sliderTarget = sliderTarget+1;
         sliderResponse(sliderTarget);
         resetTiming();
+    });
+    $(sliderControlPrev).on('click', function() {
+        sliderTarget = $(sliderPagersActive).index();
+        lastElem = $(sliderPagers).length-1;
+        sliderTarget === 0 ? sliderTarget = lastElem : sliderTarget = sliderTarget-1;
+        sliderResponse(sliderTarget);
+        resetTiming();
+    });
+
+    // slider timing
+    function sliderTiming() {
+        sliderTarget = $(sliderPagersActive).index();
+        sliderTarget === lastElem ? sliderTarget = 0 : sliderTarget = sliderTarget+1;
+        sliderResponse(sliderTarget);
     }
-});
 
-// next/prev controls
-$(sliderControlNext).on('click', function() {
-    sliderTarget = $(sliderPagersActive).index();
-    sliderTarget === lastElem ? sliderTarget = 0 : sliderTarget = sliderTarget+1;
-    sliderResponse(sliderTarget);
-    resetTiming();
-});
-$(sliderControlPrev).on('click', function() {
-    sliderTarget = $(sliderPagersActive).index();
-    lastElem = $(sliderPagers).length-1;
-    sliderTarget === 0 ? sliderTarget = lastElem : sliderTarget = sliderTarget-1;
-    sliderResponse(sliderTarget);
-    resetTiming();
-});
-
-// slider timing
-function sliderTiming() {
-    sliderTarget = $(sliderPagersActive).index();
-    sliderTarget === lastElem ? sliderTarget = 0 : sliderTarget = sliderTarget+1;
-    sliderResponse(sliderTarget);
-}
-
-// slider autoplay
-var timingRun = setInterval(function() {
-    sliderTiming();
-}, sliderSpeed);
-
-function resetTiming() {
-    clearInterval(timingRun);
-    timingRun = setInterval(function() {
-      sliderTiming();
+    // slider autoplay
+    var timingRun = setInterval(function() {
+        sliderTiming();
     }, sliderSpeed);
-}
+
+    function resetTiming() {
+        clearInterval(timingRun);
+        timingRun = setInterval(function() {
+        sliderTiming();
+        }, sliderSpeed);
+    }
 
 
 </script>
